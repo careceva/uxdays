@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seiva — Hem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Besley:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./tokens.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; }
+  h1, h2, h3, h4 { margin: 0; }
+  p { margin: 0; }
+  ul { margin: 0; padding: 0; list-style: none; }
+
+  /* ============ LAYOUT — 1400px wrapper ============ */
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 0 var(--space-6); }
+  .topbar-bleed { background: var(--color-primary-05); }
+
+  /* ============ TOP BAR ============ */
+  .topbar {
+    display: flex; align-items: center; gap: var(--space-6);
+    padding: var(--space-4) 0;
+  }
+  .topbar__logo { display: block; height: 48px; width: auto; flex-shrink: 0; }
+  .topbar__nav { display: flex; gap: var(--space-1); margin-left: var(--space-2); }
+  .topbar__nav-item {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-semibold);
+  }
+  .topbar__nav-item.is-active { background: var(--color-bg); }
+  .topbar__nav-item:hover:not(.is-active) { background: var(--color-primary-10); }
+
+  .search-field {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    flex: 1; max-width: 560px;
+  }
+  .search-field input {
+    flex: 1; border: 0; outline: 0; background: transparent;
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    color: var(--color-text);
+  }
+  .search-field input::placeholder { color: var(--color-text-subtle); }
+  .search-field [data-lucide] { color: var(--color-text-muted); width: 18px; height: 18px; }
+
+  .topbar__right { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: var(--radius-full);
+    background: var(--color-bg); border: 1px solid var(--color-border);
+    color: var(--color-text);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard);
+  }
+  .icon-btn:hover { background: var(--color-bg-subtle); }
+  .icon-btn [data-lucide] { width: 18px; height: 18px; }
+  .icon-btn--sm { width: 32px; height: 32px; }
+  .icon-btn--sm [data-lucide] { width: 16px; height: 16px; }
+  .icon-btn--plain { background: transparent; border: 0; }
+  .icon-btn--plain:hover { background: var(--color-bg-subtle); }
+
+  /* ============ BUTTONS ============ */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    background: var(--color-action);
+    color: var(--color-text-inverse);
+    border: 0; border-radius: var(--radius-sm);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--body-sm-size);
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard);
+  }
+  .btn-primary:hover { background: var(--color-action-hover); }
+  .btn-primary [data-lucide] { width: 16px; height: 16px; }
+  .btn-primary--block { width: 100%; justify-content: center; }
+
+  /* ============ PAGE GRID ============ */
+  .page {
+    display: grid;
+    grid-template-columns: 281px 1fr;
+    gap: var(--space-8);
+    padding: var(--space-6) 0 var(--space-12);
+    align-items: start;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .category-sidebar { width: 281px; display: flex; flex-direction: column; }
+  .category-sidebar__header {
+    background: var(--color-primary-05);
+    border-radius: var(--radius-md);
+    height: 80px;
+    padding: 0 var(--space-6) var(--space-3);
+    display: flex; align-items: center;
+    position: relative; z-index: 1; margin-bottom: -20px;
+  }
+  .category-sidebar__header-title {
+    font-family: var(--font-body); font-weight: var(--font-weight-bold);
+    font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    color: var(--color-text);
+  }
+  .category-sidebar__list {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6) 0;
+    display: flex; flex-direction: column;
+    gap: var(--space-8);
+    align-items: center;
+  }
+  .category-sidebar__item {
+    display: flex; align-items: center; gap: var(--space-6);
+    padding: 0 var(--space-6);
+    width: 100%;
+    color: var(--color-text);
+    font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    white-space: nowrap;
+  }
+  .category-sidebar__item [data-lucide] {
+    color: var(--color-text-muted); width: 24px; height: 24px;
+  }
+  .category-sidebar__item--active {
+    background: var(--color-primary-05);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-6);
+    width: 257px;
+  }
+  .category-sidebar__item--active [data-lucide] { color: var(--color-primary-40); }
+
+  /* ============ MAIN ============ */
+  .main { display: flex; flex-direction: column; gap: var(--space-6); min-width: 0; }
+
+  /* Hero header */
+  .hero-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+  }
+  .hero-header__title-row { display: flex; align-items: center; gap: var(--space-4); }
+  .hero-header__title {
+    font-family: var(--font-display); font-weight: var(--font-weight-regular);
+    font-size: var(--title-xxs-size); line-height: var(--title-xxs-lh);
+  }
+  .hero-header__divider { width: 1px; height: 24px; background: var(--color-border); }
+  .hero-header__meta { font-size: var(--body-sm-size); color: var(--color-text-muted); }
+  .hero-header__actions { display: flex; gap: var(--space-2); }
+
+  /* Hero-with-promo: hero-block | side-promo (side promo lives OUTSIDE the hero 2x2 grid) */
+  .hero-with-promo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--space-6);
+    align-items: stretch;
+  }
+
+  /* hero-block: dark donut card + 2x2 info grid */
+  .hero-block {
+    display: grid;
+    grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: stretch;
+  }
+
+  /* 1) Dark donut card */
+  .graph-card {
+    background: var(--color-neutral-50);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex; flex-direction: column;
+    gap: var(--space-4);
+    min-height: 320px;
+  }
+  .graph-card__brand {
+    align-self: flex-start;
+    display: inline-flex; align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg);
+    border-radius: var(--radius-full);
+    font-family: var(--font-body); font-weight: var(--font-weight-bold);
+    font-size: 0.8125rem; color: var(--color-text);
+    letter-spacing: 0.02em;
+  }
+  .graph-card__donut {
+    position: relative; flex: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .graph-card__donut svg { width: 180px; height: 180px; transform: rotate(-90deg); }
+  .graph-card__track { stroke: var(--color-neutral-40); }
+  .graph-card__fill  { stroke: var(--color-primary-30); }
+  .graph-card__value {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: var(--font-weight-regular);
+    font-size: 2rem; line-height: 1;
+    color: var(--color-text-inverse);
+  }
+  .graph-card__captions {
+    display: flex; justify-content: space-between; gap: var(--space-3);
+    font-size: 0.7rem; color: var(--color-neutral-20);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  /* 2) 2x2 info grid (light grey cards, no border) */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: var(--space-3);
+  }
+  .info-card {
+    background: var(--color-neutral-10);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex; flex-direction: column;
+    gap: var(--space-3);
+    min-height: 140px;
+  }
+  .info-card__icon {
+    width: 28px; height: 28px;
+    color: var(--color-text);
+    display: inline-flex; align-items: center;
+  }
+  .info-card__icon [data-lucide] { width: 24px; height: 24px; stroke-width: 1.5; }
+  .info-card__text {
+    font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    color: var(--color-text);
+  }
+
+  /* 3) Side promo (light grey, centered, OUTSIDE the hero 2x2 grid) */
+  .side-promo {
+    background: var(--color-neutral-10);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8) var(--space-6);
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    gap: var(--space-4);
+  }
+  .side-promo__big {
+    font-family: var(--font-body); font-weight: var(--font-weight-bold);
+    font-size: var(--title-xxs-size); line-height: var(--title-xxs-lh);
+    color: var(--color-text);
+  }
+  .side-promo__link {
+    color: var(--color-text);
+    text-decoration: underline; text-underline-offset: 4px;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--body-sm-size);
+  }
+  .side-promo__divider {
+    width: 100%; height: 1px; background: var(--color-border);
+    margin: var(--space-1) 0;
+  }
+  .side-promo__sub {
+    font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    color: var(--color-text); max-width: 22ch;
+  }
+  .side-promo__cta { width: 100%; justify-content: center; }
+  .side-promo__or { font-size: 0.8125rem; color: var(--color-text-muted); }
+  .side-promo__secondary {
+    font-size: var(--body-sm-size); color: var(--color-text);
+    text-decoration: underline; text-underline-offset: 4px;
+  }
+
+  /* Industry banner (light grey, no border) */
+  .industry-banner {
+    background: var(--color-neutral-10);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+    display: grid; grid-template-columns: auto 1fr auto auto;
+    gap: var(--space-5);
+    align-items: center;
+  }
+  .industry-banner__quote {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    color: var(--color-text);
+    font-family: var(--font-display); font-weight: var(--font-weight-bold);
+    font-size: 1.5rem; line-height: 1;
+  }
+  .industry-banner__label {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--body-md-size);
+    color: var(--color-text);
+  }
+  .industry-banner__body {
+    font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+  }
+  .industry-banner__pct {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-weight: var(--font-weight-bold);
+    font-size: var(--body-md-size); line-height: 1;
+    color: var(--color-text);
+  }
+  .industry-banner__pct [data-lucide] { width: 16px; height: 16px; color: var(--color-text); }
+
+  /* Section head */
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-4);
+    gap: var(--space-4);
+  }
+  .section-title {
+    font-family: var(--font-body); font-weight: var(--font-weight-bold);
+    font-size: var(--title-xxs-size); line-height: var(--title-xxs-lh);
+  }
+  .section-head__nav { display: flex; gap: var(--space-2); }
+
+  /* Products rotator — borderless cards, dark "S" mark, no CTA per Figma */
+  .products {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
+  }
+  .product {
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .product__img {
+    aspect-ratio: 1 / 1;
+    background: var(--color-bg-subtle);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-text-subtle);
+    font-family: var(--font-mono); font-size: 0.7rem;
+  }
+  .product__title {
+    font-size: var(--body-md-size);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--body-md-lh);
+    color: var(--color-text);
+    margin-top: var(--space-1);
+    min-height: 54px;
+  }
+  .product__list-price {
+    font-size: 0.8125rem;
+    color: var(--color-text-subtle);
+    text-decoration: line-through;
+  }
+  .product__seiva-row {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+  }
+  .product__seiva-mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    background: var(--color-neutral-50);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-display); font-weight: var(--font-weight-bold);
+    font-size: 0.85rem; line-height: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER (green tint, full-bleed; content inside 1400px wrap) -->
+<div class="topbar-bleed">
+  <div class="wrap">
+    <header class="topbar">
+      <img class="topbar__logo" src="Assetts/seiva_logo_byvisma_green.svg" alt="Seiva by Visma" />
+      <nav class="topbar__nav">
+        <a class="topbar__nav-item is-active" href="#">Hem</a>
+        <a class="topbar__nav-item" href="#">Tjänster</a>
+        <a class="topbar__nav-item" href="#">Hjälpcenter</a>
+      </nav>
+      <div class="search-field">
+        <i data-lucide="search"></i>
+        <input type="search" placeholder="Sök avtal" />
+        <i data-lucide="mic"></i>
+      </div>
+      <div class="topbar__right">
+        <button class="icon-btn" aria-label="Notiser"><i data-lucide="bell"></i></button>
+        <button class="icon-btn" aria-label="Översikt"><i data-lucide="layout-dashboard"></i></button>
+        <button class="icon-btn" aria-label="Inställningar"><i data-lucide="settings"></i></button>
+        <button class="btn-primary">Lägg till <i data-lucide="plus"></i></button>
+      </div>
+    </header>
+  </div>
+</div>
+
+<!-- PAGE (sidebar + main, inside 1400px wrap) -->
+<div class="wrap">
+  <div class="page">
+
+    <nav class="category-sidebar" aria-label="Kategori">
+      <div class="category-sidebar__header">
+        <span class="category-sidebar__header-title">Kategori</span>
+      </div>
+      <div class="category-sidebar__list">
+        <a class="category-sidebar__item" href="#"><i data-lucide="smartphone"></i> Telefoni &amp; Tillbehör</a>
+        <a class="category-sidebar__item" href="#"><i data-lucide="fuel"></i> Drivmedel &amp; Tillbehör</a>
+        <a class="category-sidebar__item" href="#"><i data-lucide="plane"></i> Resor</a>
+        <a class="category-sidebar__item category-sidebar__item--active" href="#"><i data-lucide="pin"></i> Kontor</a>
+        <a class="category-sidebar__item" href="#"><i data-lucide="piggy-bank"></i> Ekonomi &amp; Personal</a>
+        <a class="category-sidebar__item" href="#"><i data-lucide="monitor"></i> IT, Datorer &amp; Skrivare</a>
+        <a class="category-sidebar__item" href="#"><i data-lucide="truck"></i> Bud &amp; Frakt</a>
+        <a class="category-sidebar__item" href="#"><i data-lucide="coffee"></i> Dryck &amp; Frukt</a>
+        <a class="category-sidebar__item" href="#"><i data-lucide="glasses"></i> Glasögon &amp; Linser</a>
+        <a class="category-sidebar__item" href="#"><i data-lucide="printer"></i> Tryck &amp; Profil</a>
+        <a class="category-sidebar__item" href="#"><i data-lucide="file-text"></i> Egna avtal</a>
+      </div>
+    </nav>
+
+    <main class="main">
+
+      <!-- Hero header -->
+      <header class="hero-header">
+        <div class="hero-header__title-row">
+          <h1 class="hero-header__title">Seiva upp till 35 %</h1>
+          <span class="hero-header__divider"></span>
+          <span class="hero-header__meta">Kontor</span>
+        </div>
+        <div class="hero-header__actions">
+          <button class="icon-btn icon-btn--plain" aria-label="Dela"><i data-lucide="share-2"></i></button>
+          <button class="icon-btn icon-btn--plain" aria-label="Spara"><i data-lucide="bookmark"></i></button>
+        </div>
+      </header>
+
+      <!-- Hero block (donut + 2x2 info grid) sitting NEXT TO side-promo, which is OUTSIDE the hero grid -->
+      <section class="hero-with-promo" aria-label="Avtalsöversikt">
+
+        <div class="hero-block">
+          <article class="graph-card">
+            <span class="graph-card__brand">Seiva</span>
+            <div class="graph-card__donut" role="img" aria-label="55 procent potential, du sparar 35 procent">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <circle class="graph-card__track" cx="50" cy="50" r="42" fill="none" stroke-width="6" />
+                <circle class="graph-card__fill"  cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                        stroke-dasharray="263.9" stroke-dashoffset="118.8" stroke-linecap="round" />
+              </svg>
+              <span class="graph-card__value">55 %</span>
+            </div>
+            <div class="graph-card__captions">
+              <span>Du sparar 35 %</span>
+              <span>Potential</span>
+            </div>
+          </article>
+
+          <div class="info-grid">
+            <div class="info-card">
+              <span class="info-card__icon"><i data-lucide="package"></i></span>
+              <p class="info-card__text">Ingen fraktkostnad</p>
+            </div>
+            <div class="info-card">
+              <span class="info-card__icon"><i data-lucide="badge-percent"></i></span>
+              <p class="info-card__text">Rabatterade priser på hela sortimentet</p>
+            </div>
+            <div class="info-card">
+              <span class="info-card__icon"><i data-lucide="layers"></i></span>
+              <p class="info-card__text">Över 700 produkter med specialpris</p>
+            </div>
+            <div class="info-card">
+              <span class="info-card__icon"><i data-lucide="star"></i></span>
+              <p class="info-card__text">Kundbonus: 4 % av total volym</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-promo">
+          <p class="side-promo__big">upp till 35 %</p>
+          <a class="side-promo__link" href="#">Seiva Kontor</a>
+          <span class="side-promo__divider"></span>
+          <p class="side-promo__sub">besparingar på IT-produkter och tjänster</p>
+          <button class="btn-primary side-promo__cta">
+            <i data-lucide="shopping-bag"></i> Beställ
+          </button>
+          <p class="side-promo__or">eller</p>
+          <a class="side-promo__secondary" href="#">Begär anpassad orderform</a>
+        </aside>
+
+      </section>
+
+      <!-- Industry banner -->
+      <section class="industry-banner" aria-label="Branschens snittbesparing">
+        <span class="industry-banner__quote">«</span>
+        <div>
+          <p class="industry-banner__label">Branschens snittbesparing</p>
+          <p class="industry-banner__body">Genomsnittlig besparing i ditt företagssegment</p>
+        </div>
+        <span class="industry-banner__quote">»</span>
+        <span class="industry-banner__pct">27 % <i data-lucide="arrow-up-right"></i></span>
+      </section>
+
+      <!-- Popular products (rotator) -->
+      <section aria-label="Populära produkter">
+        <header class="section-head">
+          <h2 class="section-title">Populära produkter</h2>
+          <div class="section-head__nav">
+            <button class="icon-btn icon-btn--sm" aria-label="Föregående"><i data-lucide="chevron-left"></i></button>
+            <button class="icon-btn icon-btn--sm" aria-label="Nästa"><i data-lucide="chevron-right"></i></button>
+          </div>
+        </header>
+
+        <div class="products">
+
+          <article class="product">
+            <div class="product__img">Produktbild</div>
+            <h3 class="product__title">Stiftemaskin OPTIMA Grip 20ark elektrisk</h3>
+            <p class="product__list-price">Listpris NOK 1 190,00</p>
+            <p class="product__seiva-row">
+              SEIVA | 773,5 / -35 % <span class="product__seiva-mark">S</span>
+            </p>
+          </article>
+
+          <article class="product">
+            <div class="product__img">Produktbild</div>
+            <h3 class="product__title">Te LIPTON assortert kartong (300)</h3>
+            <p class="product__list-price">Listpris NOK 589,00</p>
+            <p class="product__seiva-row">
+              SEIVA | 382,86 / -35 % <span class="product__seiva-mark">S</span>
+            </p>
+          </article>
+
+          <article class="product">
+            <div class="product__img">Produktbild</div>
+            <h3 class="product__title">Kopipapir HP Premium A4 80g (500)</h3>
+            <p class="product__list-price">Listpris NOK 745,00</p>
+            <p class="product__seiva-row">
+              SEIVA | 558,75 / -25 % <span class="product__seiva-mark">S</span>
+            </p>
+          </article>
+
+          <article class="product">
+            <div class="product__img">Produktbild</div>
+            <h3 class="product__title">Kopipapir MULTICOPY A4 80g (500)</h3>
+            <p class="product__list-price">Listpris NOK 459,50</p>
+            <p class="product__seiva-row">
+              SEIVA | 298,40 / -35 % <span class="product__seiva-mark">S</span>
+            </p>
+          </article>
+
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+</div>
+
+<script>
+  if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>

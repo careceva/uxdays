@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Seiva Portalen — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Besley:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./tokens.css" />
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  main { max-width: 1200px; margin: 0 auto; padding: var(--space-16) var(--space-8) var(--space-32); }
+
+  /* ---- Top-level tabs ---- */
+  .tab-bar {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--space-12);
+    position: sticky; top: 0; background: var(--color-bg); z-index: 10;
+  }
+  .tab-bar__item {
+    padding: var(--space-4) var(--space-6);
+    background: transparent; border: none;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    font-family: var(--font-body); font-size: var(--body-md-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted); cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-standard),
+                border-color var(--duration-fast) var(--ease-standard);
+  }
+  .tab-bar__item:hover { color: var(--color-text); }
+  .tab-bar__item.is-active {
+    color: var(--color-text);
+    border-bottom-color: var(--color-action);
+  }
+  [data-tab-panel][hidden] { display: none; }
+
+  /* Header */
+  .crumbs {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    color: var(--color-text-brand); margin-bottom: var(--space-16);
+  }
+  .crumbs span { color: var(--color-text); font-weight: var(--font-weight-bold); }
+
+  /* Section */
+  section { margin-bottom: var(--space-24); }
+  .section-title {
+    font-family: var(--font-display); font-weight: var(--font-weight-regular);
+    font-size: var(--title-sm-size); line-height: var(--title-sm-lh);
+    margin: 0 0 var(--space-6);
+  }
+  .section-sub {
+    font-family: var(--font-display); font-weight: var(--font-weight-regular);
+    font-size: var(--title-xxs-size); line-height: var(--title-xxs-lh);
+    margin: var(--space-12) 0 var(--space-4);
+  }
+  .section-text {
+    max-width: 70ch; font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    color: var(--color-text-muted); margin: 0 0 var(--space-6);
+  }
+
+  /* Color grids */
+  .swatches {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-4);
+  }
+  .swatch { display: flex; flex-direction: column; gap: var(--space-2); }
+  .swatch-chip {
+    aspect-ratio: 4 / 3; border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+  }
+  .swatch-label {
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-bold); color: var(--color-text);
+  }
+  .swatch-hex {
+    font-family: var(--font-mono); font-size: 0.8125rem;
+    color: var(--color-text-muted); text-transform: uppercase;
+  }
+  .swatch-use {
+    font-family: var(--font-body); font-size: 0.8125rem; line-height: 1.4;
+    color: var(--color-text-subtle); margin-top: var(--space-1);
+  }
+
+  /* Typography demo */
+  .type-row {
+    display: grid; grid-template-columns: 140px 80px 100px 100px 1fr;
+    gap: var(--space-4); align-items: baseline;
+    padding: var(--space-4) 0; border-bottom: 1px solid var(--color-border);
+  }
+  .type-row.head {
+    border-bottom: 2px solid var(--color-text);
+    font-weight: var(--font-weight-bold);
+  }
+  .type-row > div:first-child { font-weight: var(--font-weight-bold); }
+  .type-meta { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--color-text-muted); }
+
+  /* Spacing scale */
+  .scale-table {
+    display: grid; grid-template-columns: 120px 100px 1fr;
+    gap: var(--space-3) var(--space-4); align-items: center;
+  }
+  .scale-token { font-family: var(--font-mono); font-size: 0.875rem; color: var(--color-text); }
+  .scale-value { font-family: var(--font-mono); font-size: 0.875rem; color: var(--color-text-muted); }
+  .scale-bar {
+    height: 16px; background: var(--color-primary-30); border-radius: var(--radius-xs);
+  }
+
+  /* Radius scale */
+  .radius-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-4);
+  }
+  .radius-card {
+    aspect-ratio: 1; background: var(--color-primary-20);
+    border: 2px solid var(--color-primary-40);
+    display: flex; align-items: flex-end; justify-content: center;
+    padding: var(--space-3);
+    font-family: var(--font-mono); font-size: 0.8125rem; color: var(--color-primary-50);
+  }
+
+  /* Component preview */
+  .components { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
+  .card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+  }
+  .card h3 {
+    margin: 0 0 var(--space-3); font-family: var(--font-display);
+    font-weight: var(--font-weight-regular); font-size: var(--title-xxs-size);
+    line-height: var(--title-xxs-lh);
+  }
+  .card p {
+    margin: 0 0 var(--space-4); font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    color: var(--color-text-muted);
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard),
+                color var(--duration-fast) var(--ease-standard),
+                box-shadow var(--duration-fast) var(--ease-standard);
+  }
+  .btn-primary { background: var(--color-action); color: var(--color-text-inverse); }
+  .btn-primary:hover { background: var(--color-action-hover); }
+  .btn-secondary {
+    background: var(--color-bg); color: var(--color-action);
+    border-color: var(--color-border-brand);
+  }
+  .btn-secondary:hover { background: var(--color-bg-brand-subtle); }
+  .btn-ghost { background: transparent; color: var(--color-action); }
+  .btn-ghost:hover { background: var(--color-bg-brand-subtle); }
+
+  .input {
+    width: 100%; padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    color: var(--color-text); background: var(--color-bg);
+    transition: border-color var(--duration-fast) var(--ease-standard),
+                box-shadow var(--duration-fast) var(--ease-standard);
+  }
+  .input:focus { outline: none; border-color: var(--color-border-brand); box-shadow: var(--shadow-focus); }
+  .label {
+    display: block; margin-bottom: var(--space-2);
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-family: var(--font-body); font-size: 0.8125rem;
+    font-weight: var(--font-weight-semibold);
+  }
+  .badge-brand   { background: var(--color-primary-10);  color: var(--color-primary-50); }
+  .badge-accent  { background: var(--color-accent-10);   color: var(--color-accent-50);  }
+  .badge-neutral { background: var(--color-neutral-10);  color: var(--color-neutral-50); }
+
+  .alert {
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary-40);
+    background: var(--color-primary-05);
+  }
+
+  .shadow-row { display: flex; gap: var(--space-6); flex-wrap: wrap; }
+  .shadow-tile {
+    width: 140px; aspect-ratio: 1;
+    background: var(--color-bg); border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 0.8125rem; color: var(--color-text-muted);
+  }
+  .shadow-tile.xs { box-shadow: var(--shadow-xs); }
+  .shadow-tile.sm { box-shadow: var(--shadow-sm); }
+  .shadow-tile.md { box-shadow: var(--shadow-md); }
+  .shadow-tile.lg { box-shadow: var(--shadow-lg); }
+  .shadow-tile.xl { box-shadow: var(--shadow-xl); }
+
+  /* ==========================================================
+     PATTERNS — derived from the Home + Contract pages
+     ========================================================== */
+  .pattern { margin-bottom: var(--space-12); }
+  .pattern-label {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--color-text-subtle); text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: var(--space-3);
+  }
+  .pattern-frame {
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    background: var(--color-bg);
+    overflow: hidden;
+  }
+  .pattern-frame--tight  { padding: 0; }
+  .pattern-frame--subtle { background: var(--color-bg-subtle); }
+
+  /* Lucide sizing */
+  [data-lucide] { width: 20px; height: 20px; stroke-width: 1.75; flex-shrink: 0; }
+  .icon-sm [data-lucide] { width: 16px; height: 16px; }
+  .icon-lg [data-lucide] { width: 24px; height: 24px; }
+  .icon-xl [data-lucide] { width: 32px; height: 32px; }
+
+  /* ---- SEIVA logo (asset) ---- */
+  .seiva-mark { display: block; height: 56px; width: auto; flex-shrink: 0; }
+
+  /* ---- 1. Top bar ----
+     Source: figma node 5854:18766. BG is light green tint (Primary 20 = primary-05).
+     Menu button is a white circle, not a green square. */
+  .app-topbar {
+    display: flex; align-items: center; gap: var(--space-6);
+    padding: var(--space-3) var(--space-6);
+    background: var(--color-primary-05);
+  }
+  .app-topbar__menu {
+    width: 40px; height: 40px; border-radius: var(--radius-full);
+    border: 1px solid var(--color-border); background: var(--color-bg);
+    color: var(--color-text); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background var(--duration-fast) var(--ease-standard);
+  }
+  .app-topbar__menu:hover { background: var(--color-bg-subtle); }
+  .app-topbar__search { flex: 1; max-width: 480px; margin: 0 auto; }
+  .app-topbar__user {
+    display: flex; align-items: center; gap: var(--space-4);
+    font-size: var(--body-sm-size); color: var(--color-text);
+  }
+  .app-topbar__group {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    color: var(--color-text);
+  }
+  .app-topbar__divider {
+    width: 1px; height: 24px; background: var(--color-border);
+  }
+  .icon-button {
+    width: 32px; height: 32px; border-radius: var(--radius-full);
+    border: none; background: transparent;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--color-text);
+    transition: background var(--duration-fast) var(--ease-standard);
+  }
+  .icon-button:hover { background: rgba(20, 20, 20, 0.06); }
+  /* Scrolled state: white bg + soft separator. Toggled live when the page scrolls
+     past the threshold (see script at end of body). */
+  .app-topbar--scrolled {
+    background: var(--color-bg);
+    box-shadow: var(--shadow-sm);
+    transition: background var(--duration-base) var(--ease-standard),
+                box-shadow var(--duration-base) var(--ease-standard);
+  }
+  .app-topbar {
+    transition: background var(--duration-base) var(--ease-standard),
+                box-shadow var(--duration-base) var(--ease-standard);
+  }
+  .state-label {
+    display: inline-block; margin-bottom: var(--space-2);
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: var(--color-text-subtle); text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ---- 2. Search field ---- */
+  .search-field {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    transition: border-color var(--duration-fast) var(--ease-standard),
+                box-shadow var(--duration-fast) var(--ease-standard);
+  }
+  .search-field:focus-within { border-color: var(--color-border-action); box-shadow: var(--shadow-focus); }
+  .search-field input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    color: var(--color-text);
+  }
+  .search-field input::placeholder { color: var(--color-text-subtle); }
+  .search-field [data-lucide] { color: var(--color-text-muted); }
+
+  /* ---- 3. Category sidebar ----
+     Source: figma node 4473:24207. Width 281px, header is a separate green-tint
+     block that overlaps the categories container by 20px (mb: -20px). Items use
+     40px gap, 24px horizontal padding, 24px icon-to-label gap, no-wrap labels. */
+  .category-sidebar { width: 281px; display: flex; flex-direction: column; }
+  .category-sidebar__header {
+    background: var(--color-primary-05);
+    border-radius: var(--radius-md);
+    height: 80px;
+    padding: 0 var(--space-6) var(--space-3);
+    display: flex; align-items: center;
+    position: relative; z-index: 1;
+    margin-bottom: -20px;
+  }
+  .category-sidebar__header-title {
+    font-family: var(--font-body); font-weight: var(--font-weight-bold);
+    font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    color: var(--color-text);
+  }
+  .category-sidebar__list {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6) 0;
+    display: flex; flex-direction: column;
+    gap: var(--space-10);            /* 40px between items */
+    align-items: center;
+  }
+  .category-sidebar__item {
+    display: flex; align-items: center; gap: var(--space-6); /* 24px */
+    padding: 0 var(--space-6);                                /* 24px */
+    width: 100%;
+    color: var(--color-text); font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    white-space: nowrap; text-decoration: none;
+  }
+  .category-sidebar__item [data-lucide] { color: var(--color-text-muted); width: 24px; height: 24px; }
+  .category-sidebar__item--active {
+    background: var(--color-primary-05);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-6);                  /* 12 / 24 */
+    width: 270px;                                            /* 281 - 11 inset */
+  }
+  .category-sidebar__item--active [data-lucide] { color: var(--color-primary-40); }
+
+  /* ---- 4. Sidebar CTA ---- */
+  .sidebar-cta {
+    display: block; width: 100%;
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-action); color: var(--color-text-inverse);
+    border: none; border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    text-align: center; cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard);
+  }
+  .sidebar-cta:hover { background: var(--color-action-hover); }
+
+  /* ---- 5. Hero banner ---- */
+  .hero {
+    display: grid; grid-template-columns: 1fr auto; gap: var(--space-8);
+    align-items: center;
+    background: var(--color-bg-brand-subtle);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-12) var(--space-12);
+  }
+  .hero__title {
+    font-family: var(--font-display); font-weight: var(--font-weight-regular);
+    font-size: var(--title-sm-size); line-height: var(--title-sm-lh);
+    margin: 0 0 var(--space-3);
+  }
+  .hero__sub {
+    font-size: var(--body-md-size); line-height: var(--body-md-lh);
+    color: var(--color-text-muted); margin: 0 0 var(--space-6); max-width: 50ch;
+  }
+  .hero__cta {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    background: var(--color-action); color: var(--color-text-inverse);
+    border-radius: var(--radius-sm); border: none; cursor: pointer;
+    font-family: var(--font-body); font-weight: var(--font-weight-semibold);
+    font-size: var(--body-sm-size);
+  }
+  .hero__art {
+    display: block; height: 200px; width: auto; max-width: 100%;
+  }
+
+  /* ---- 6. Brand promo (contract top) ---- */
+  .brand-promo {
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: var(--space-6); align-items: center;
+    padding: var(--space-5) var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+  }
+  .brand-logo {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg-subtle); border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--color-text-muted); text-transform: uppercase;
+    letter-spacing: 0.04em; min-width: 96px; text-align: center;
+  }
+  .brand-promo__title {
+    font-family: var(--font-display); font-weight: var(--font-weight-regular);
+    font-size: var(--title-xs-size); line-height: var(--title-xs-lh);
+    margin: 0;
+  }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    background: var(--color-bg); color: var(--color-text-action);
+    border: 1px solid var(--color-border-action); border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-weight: var(--font-weight-semibold);
+    font-size: var(--body-sm-size); cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard);
+  }
+  .btn-outline:hover { background: var(--color-bg-action-subtle); }
+
+  /* ---- 7. Tabs ---- */
+  .tabs {
+    display: inline-flex; gap: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .tabs__item {
+    padding: var(--space-3) var(--space-5);
+    color: var(--color-text-muted);
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    background: none; border: none; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color var(--duration-fast) var(--ease-standard),
+                border-color var(--duration-fast) var(--ease-standard);
+  }
+  .tabs__item:hover { color: var(--color-text); }
+  .tabs__item--active {
+    color: var(--color-text);
+    border-bottom-color: var(--color-action);
+  }
+
+  /* ---- 8. Filter bar ---- */
+  .filter-bar {
+    display: flex; gap: var(--space-3); align-items: center;
+    padding: var(--space-3);
+    background: var(--color-bg); border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+  .filter-bar .search-field { flex: 1; }
+  .pill-button {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border); border-radius: var(--radius-full);
+    background: var(--color-bg); color: var(--color-text);
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-semibold); cursor: pointer;
+  }
+
+  /* ---- 9. Small contract card (grid item) ---- */
+  .contract-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-4);
+  }
+  .contract-card {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--color-bg); border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    align-items: flex-start;
+  }
+  .contract-card__rabatt {
+    font-family: var(--font-body); font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .btn-card {
+    display: block; width: 100%;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-action); color: var(--color-text-inverse);
+    border: none; border-radius: var(--radius-xs);
+    font-family: var(--font-body); font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-semibold); cursor: pointer; text-align: center;
+  }
+  .btn-card:hover { background: var(--color-action-hover); }
+
+  /* ---- 10. News card ---- */
+  .news-card {
+    display: grid; grid-template-columns: 1fr 120px; gap: var(--space-4);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .news-card__eyebrow {
+    font-family: var(--font-body); font-size: 0.75rem;
+    font-weight: var(--font-weight-bold); text-transform: uppercase;
+    color: var(--color-text-brand); letter-spacing: 0.06em;
+    margin-bottom: var(--space-2);
+  }
+  .news-card__title {
+    font-family: var(--font-body); font-weight: var(--font-weight-semibold);
+    font-size: var(--body-md-size); line-height: var(--body-md-lh);
+    color: var(--color-text); margin: 0;
+  }
+  .image-placeholder {
+    background: var(--color-neutral-10);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--color-text-subtle);
+    aspect-ratio: 4 / 3; min-height: 80px;
+  }
+
+  /* ---- 11. Promo card ----
+     Background fill TBD — the vivid yellow in the Figma isn't in the variable set.
+     Using a neutral placeholder until the brand color is confirmed. */
+  .promo-card {
+    background: var(--color-neutral-10);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    color: var(--color-text);
+  }
+  .promo-card__eyebrow {
+    font-family: var(--font-display); font-weight: var(--font-weight-bold);
+    font-size: var(--title-xxs-size); line-height: 1.2;
+    margin: 0 0 var(--space-2);
+  }
+  .promo-card__body {
+    font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    margin: var(--space-3) 0;
+  }
+  .promo-card__link {
+    font-weight: var(--font-weight-bold); color: var(--color-text-action);
+    text-decoration: underline;
+  }
+  .promo-card__tbd {
+    display: inline-block; margin-bottom: var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-bg); border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-text-subtle);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  /* ---- 12. Large content card ---- */
+  .content-card {
+    display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6);
+    align-items: center;
+    background: var(--color-bg-brand-subtle);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-6);
+  }
+  .content-card .image-placeholder { aspect-ratio: 4 / 3; min-height: 180px; }
+  .content-card__body { padding: var(--space-3) var(--space-4); }
+  .content-card__title {
+    font-family: var(--font-display); font-weight: var(--font-weight-regular);
+    font-size: var(--title-xxs-size); line-height: var(--title-xxs-lh);
+    margin: var(--space-3) 0 var(--space-3);
+  }
+  .content-card__text {
+    font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    color: var(--color-text-muted); margin: 0 0 var(--space-5);
+  }
+
+  /* ---- 13. Info banner ---- */
+  .info-banner {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-accent-10);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+  }
+  .info-banner__icon {
+    width: 32px; height: 32px; border-radius: var(--radius-full);
+    background: var(--color-accent-40); color: var(--color-neutral-05);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .info-banner__title {
+    font-weight: var(--font-weight-bold); color: var(--color-text-action);
+    margin-right: var(--space-2);
+  }
+
+  /* ---- 14. Breadcrumb ---- */
+  .breadcrumb {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-size: var(--body-sm-size); color: var(--color-text-muted);
+  }
+  .breadcrumb a { color: var(--color-text-muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--color-text); }
+  .breadcrumb [aria-current="page"] { color: var(--color-text); font-weight: var(--font-weight-semibold); }
+  .breadcrumb [data-lucide] { width: 14px; height: 14px; color: var(--color-text-subtle); }
+
+  /* ---- 15. Bullet info ---- */
+  .bullet-info {
+    display: grid; gap: var(--space-5);
+    padding: var(--space-6);
+    border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    background: var(--color-bg);
+  }
+  .bullet-info__row { display: grid; grid-template-columns: 32px 1fr; gap: var(--space-4); }
+  .bullet-info__icon {
+    width: 32px; height: 32px; border-radius: var(--radius-full);
+    background: var(--color-bg-brand-subtle); color: var(--color-primary-40);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .bullet-info__title {
+    font-weight: var(--font-weight-bold); font-size: var(--body-sm-size);
+    margin: 0 0 var(--space-1);
+  }
+  .bullet-info__body {
+    font-size: var(--body-sm-size); line-height: var(--body-sm-lh);
+    color: var(--color-text-muted); margin: 0;
+  }
+
+  /* ---- 16. Link row ---- */
+  .link-row-list { display: grid; gap: 0; }
+  .link-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--space-5) 0;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text); cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+  .link-row:hover { color: var(--color-text-action); }
+  .link-row:last-child { border-bottom: 1px solid var(--color-border); }
+  .link-row__title {
+    font-family: var(--font-body); font-weight: var(--font-weight-semibold);
+    font-size: var(--body-md-size);
+  }
+
+  /* ---- 17. Footer ---- */
+  .app-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--space-5) var(--space-6);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text-muted); font-size: 0.8125rem;
+  }
+  .app-footer__left, .app-footer__right { display: flex; gap: var(--space-5); align-items: center; }
+  .app-footer a { color: var(--color-text-muted); text-decoration: none; }
+  .app-footer a:hover { color: var(--color-text); }
+
+  /* Helpers */
+  .stack { display: flex; flex-direction: column; gap: var(--space-3); }
+  .row   { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+  .grow  { flex: 1; }
+</style>
+</head>
+<body>
+<main>
+
+  <div class="crumbs">Template <span>›</span> <span>Design System</span></div>
+  <h1 class="title-lg" style="margin:0 0 var(--space-4);">Design System</h1>
+  <p class="body-lg" style="max-width: 65ch; color: var(--color-text-muted); margin: 0 0 var(--space-12);">
+    Foundations and components for Seiva Portalen. Built from the Figma source.
+    Spacing and corner-radius scales are multiples of 4px. WCAG 2.1 AA throughout.
+  </p>
+
+  <nav class="tab-bar" role="tablist">
+    <button class="tab-bar__item is-active" data-tab="tokens"     role="tab" aria-selected="true">Tokens</button>
+    <button class="tab-bar__item"           data-tab="primitives" role="tab" aria-selected="false">UI primitives</button>
+    <button class="tab-bar__item"           data-tab="components" role="tab" aria-selected="false">Components</button>
+  </nav>
+
+  <div data-tab-panel="tokens" role="tabpanel">
+
+  <!-- ============== COLOR ============== -->
+  <section>
+    <h2 class="section-title">Color</h2>
+    <p class="section-text">
+      Six intensities per family — shades for text & graphics, tints for backgrounds & strokes.
+      Use shades when contrast ≥ 4.5:1 is required, tints when it isn't.
+    </p>
+
+    <h3 class="section-sub">Primary — Green</h3>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-chip" style="background:#004D33"></div><div class="swatch-label">primary 50</div><div class="swatch-hex">#004D33</div><div class="swatch-use">Deep — shadows, dark bg</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#00875A"></div><div class="swatch-label">primary 40</div><div class="swatch-hex">#00875A</div><div class="swatch-use">Dark — text ≥ 4.5:1</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#0ACC8B"></div><div class="swatch-label">primary 30</div><div class="swatch-hex">#0ACC8B</div><div class="swatch-use">Vibrant — graphics ≥ 3:1</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#C5E5DB"></div><div class="swatch-label">primary 20</div><div class="swatch-hex">#C5E5DB</div><div class="swatch-use">Deep tint — strokes</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#E1F5EE"></div><div class="swatch-label">primary 10</div><div class="swatch-hex">#E1F5EE</div><div class="swatch-use">Tint — dividers</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F2FAF7"></div><div class="swatch-label">primary 05</div><div class="swatch-hex">#F2FAF7</div><div class="swatch-use">Light — hover bg</div></div>
+    </div>
+
+    <h3 class="section-sub">Secondary / Accent — Indigo</h3>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-chip" style="background:#333980"></div><div class="swatch-label">accent 50</div><div class="swatch-hex">#333980</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#5F68D3"></div><div class="swatch-label">accent 40</div><div class="swatch-hex">#5F68D3</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#848CF0"></div><div class="swatch-label">accent 30</div><div class="swatch-hex">#848CF0</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#D5D7F2"></div><div class="swatch-label">accent 20</div><div class="swatch-hex">#D5D7F2</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#EBECFA"></div><div class="swatch-label">accent 10</div><div class="swatch-hex">#EBECFA</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F2F3FA"></div><div class="swatch-label">accent 05</div><div class="swatch-hex">#F2F3FA</div></div>
+    </div>
+
+    <h3 class="section-sub">Neutrals</h3>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-chip" style="background:#141414"></div><div class="swatch-label">neutral 50</div><div class="swatch-hex">#141414</div><div class="swatch-use">Body text, titles</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#424242"></div><div class="swatch-label">neutral 40</div><div class="swatch-hex">#424242</div><div class="swatch-use">Disabled ≥ 4.5:1</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#888888"></div><div class="swatch-label">neutral 30</div><div class="swatch-hex">#888888</div><div class="swatch-use">Graphics ≥ 3:1</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#E0E0E0"></div><div class="swatch-label">neutral 20</div><div class="swatch-hex">#E0E0E0</div><div class="swatch-use">Dividers</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#F5F5F5"></div><div class="swatch-label">neutral 10</div><div class="swatch-hex">#F5F5F5</div><div class="swatch-use">Backgrounds</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#FFFFFF"></div><div class="swatch-label">neutral 05</div><div class="swatch-hex">#FFFFFF</div><div class="swatch-use">Text & backgrounds</div></div>
+    </div>
+  </section>
+
+  <!-- ============== TYPOGRAPHY ============== -->
+  <section>
+    <h2 class="section-title">Typography</h2>
+    <p class="section-text">
+      <strong>Besley</strong> (serif) for titles & display. <strong>Archivo</strong> (sans-serif) for body & UI.
+    </p>
+
+    <h3 class="section-sub">Titles — Besley</h3>
+    <div class="type-row head">
+      <div>Token</div><div>Size</div><div>Line H.</div><div>Weight</div><div>Sample</div>
+    </div>
+    <div class="type-row">
+      <div>title-lg</div><div class="type-meta">96 / 6rem</div><div class="type-meta">1.2</div><div class="type-meta">Regular</div>
+      <div class="title-lg">My favorite…</div>
+    </div>
+    <div class="type-row">
+      <div>title-md</div><div class="type-meta">64 / 4rem</div><div class="type-meta">1.2</div><div class="type-meta">Regular</div>
+      <div class="title-md">My favorite childhood memory…</div>
+    </div>
+    <div class="type-row">
+      <div>title-sm</div><div class="type-meta">48 / 3rem</div><div class="type-meta">1.2</div><div class="type-meta">Regular</div>
+      <div class="title-sm">My favorite childhood memory</div>
+    </div>
+    <div class="type-row">
+      <div>title-xs</div><div class="type-meta">32 / 2rem</div><div class="type-meta">1.4</div><div class="type-meta">Regular</div>
+      <div class="title-xs">My favorite childhood memory is not paying bills.</div>
+    </div>
+    <div class="type-row">
+      <div>title-xxs</div><div class="type-meta">24 / 1.5rem</div><div class="type-meta">1.2</div><div class="type-meta">Regular</div>
+      <div class="title-xxs">My favorite childhood memory is not paying bills.</div>
+    </div>
+
+    <h3 class="section-sub">Body — Archivo</h3>
+    <div class="type-row head">
+      <div>Token</div><div>Size</div><div>Line H.</div><div>Weight</div><div>Sample</div>
+    </div>
+    <div class="type-row">
+      <div>body-lg</div><div class="type-meta">24 / 1.5rem</div><div class="type-meta">36px</div><div class="type-meta">400 / 600</div>
+      <div class="body-lg">My favorite childhood memory is not paying bills.</div>
+    </div>
+    <div class="type-row">
+      <div>body-md</div><div class="type-meta">18 / 1.125rem</div><div class="type-meta">27px</div><div class="type-meta">400 / 600 / 700</div>
+      <div class="body-md">My favorite childhood memory is not paying bills.</div>
+    </div>
+    <div class="type-row">
+      <div>body-sm</div><div class="type-meta">16 / 1rem</div><div class="type-meta">24px</div><div class="type-meta">400 / 600 / 700</div>
+      <div class="body-sm">My favorite childhood memory is not paying bills.</div>
+    </div>
+  </section>
+
+  <!-- ============== SPACING ============== -->
+  <section>
+    <h2 class="section-title">Spacing</h2>
+    <p class="section-text">
+      All values are multiples of 4px. Token number = px ÷ 4 (e.g. <code>--space-8</code> = 32px).
+      Layout values 32, 128, 240, and 256 are inherited from the Figma source.
+    </p>
+    <div class="scale-table">
+      <div class="scale-token">--space-1</div>  <div class="scale-value">4px</div>   <div class="scale-bar" style="width:4px"></div>
+      <div class="scale-token">--space-2</div>  <div class="scale-value">8px</div>   <div class="scale-bar" style="width:8px"></div>
+      <div class="scale-token">--space-3</div>  <div class="scale-value">12px</div>  <div class="scale-bar" style="width:12px"></div>
+      <div class="scale-token">--space-4</div>  <div class="scale-value">16px</div>  <div class="scale-bar" style="width:16px"></div>
+      <div class="scale-token">--space-5</div>  <div class="scale-value">20px</div>  <div class="scale-bar" style="width:20px"></div>
+      <div class="scale-token">--space-6</div>  <div class="scale-value">24px</div>  <div class="scale-bar" style="width:24px"></div>
+      <div class="scale-token">--space-7</div>  <div class="scale-value">28px</div>  <div class="scale-bar" style="width:28px"></div>
+      <div class="scale-token">--space-8</div>  <div class="scale-value">32px</div>  <div class="scale-bar" style="width:32px"></div>
+      <div class="scale-token">--space-10</div> <div class="scale-value">40px</div>  <div class="scale-bar" style="width:40px"></div>
+      <div class="scale-token">--space-12</div> <div class="scale-value">48px</div>  <div class="scale-bar" style="width:48px"></div>
+      <div class="scale-token">--space-14</div> <div class="scale-value">56px</div>  <div class="scale-bar" style="width:56px"></div>
+      <div class="scale-token">--space-16</div> <div class="scale-value">64px</div>  <div class="scale-bar" style="width:64px"></div>
+      <div class="scale-token">--space-20</div> <div class="scale-value">80px</div>  <div class="scale-bar" style="width:80px"></div>
+      <div class="scale-token">--space-24</div> <div class="scale-value">96px</div>  <div class="scale-bar" style="width:96px"></div>
+      <div class="scale-token">--space-32</div> <div class="scale-value">128px</div> <div class="scale-bar" style="width:128px"></div>
+      <div class="scale-token">--space-40</div> <div class="scale-value">160px</div> <div class="scale-bar" style="width:160px"></div>
+      <div class="scale-token">--space-48</div> <div class="scale-value">192px</div> <div class="scale-bar" style="width:192px"></div>
+      <div class="scale-token">--space-60</div> <div class="scale-value">240px</div> <div class="scale-bar" style="width:240px"></div>
+      <div class="scale-token">--space-64</div> <div class="scale-value">256px</div> <div class="scale-bar" style="width:256px"></div>
+    </div>
+  </section>
+
+  <!-- ============== RADIUS ============== -->
+  <section>
+    <h2 class="section-title">Corner Radius</h2>
+    <p class="section-text">Multiples of 4px. <code>full</code> for pill shapes and circles.</p>
+    <div class="radius-grid">
+      <div class="radius-card" style="border-radius: var(--radius-xs)">xs — 4px</div>
+      <div class="radius-card" style="border-radius: var(--radius-sm)">sm — 8px</div>
+      <div class="radius-card" style="border-radius: var(--radius-md)">md — 12px</div>
+      <div class="radius-card" style="border-radius: var(--radius-lg)">lg — 16px</div>
+      <div class="radius-card" style="border-radius: var(--radius-xl)">xl — 20px</div>
+      <div class="radius-card" style="border-radius: var(--radius-2xl)">2xl — 24px</div>
+      <div class="radius-card" style="border-radius: var(--radius-3xl)">3xl — 32px</div>
+      <div class="radius-card" style="border-radius: var(--radius-full)">full</div>
+    </div>
+  </section>
+
+  <!-- ============== ELEVATION ============== -->
+  <section>
+    <h2 class="section-title">Elevation</h2>
+    <p class="section-text">Soft shadows for layering. Use sparingly — borders carry most separation.</p>
+    <div class="shadow-row">
+      <div class="shadow-tile xs">xs</div>
+      <div class="shadow-tile sm">sm</div>
+      <div class="shadow-tile md">md</div>
+      <div class="shadow-tile lg">lg</div>
+      <div class="shadow-tile xl">xl</div>
+    </div>
+  </section>
+
+  </div><!-- /tokens -->
+
+  <div data-tab-panel="primitives" role="tabpanel" hidden>
+
+  <!-- ============== PRIMITIVES ============== -->
+  <section>
+    <h2 class="section-title">UI primitives</h2>
+    <p class="section-text">Reusable building blocks — buttons, inputs, badges, alerts. Composed entirely from the tokens.</p>
+    <div class="components">
+
+      <div class="card">
+        <h3>Buttons</h3>
+        <p>Three variants. Each uses <code>--radius-sm</code> and <code>--space-3 / --space-5</code> padding.</p>
+        <div style="display:flex; gap:var(--space-3); flex-wrap:wrap;">
+          <button class="btn btn-primary">Primary</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-ghost">Ghost</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Form field</h3>
+        <p>Focus ring uses <code>--shadow-focus</code> (primary-30 at 35% alpha).</p>
+        <label class="label" for="demo-email">Email</label>
+        <input class="input" id="demo-email" type="email" placeholder="you@seiva.com" />
+      </div>
+
+      <div class="card">
+        <h3>Badges</h3>
+        <p>Pill shape via <code>--radius-full</code>; subtle tint backgrounds.</p>
+        <div style="display:flex; gap:var(--space-2); flex-wrap:wrap;">
+          <span class="badge badge-brand">Active</span>
+          <span class="badge badge-accent">Beta</span>
+          <span class="badge badge-neutral">Archived</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Alert</h3>
+        <p>Brand-tinted background with a 4px primary border.</p>
+        <div class="alert">
+          <strong>Heads up.</strong> Your changes were saved. They'll be live within a few minutes.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  </div><!-- /primitives -->
+
+  <div data-tab-panel="components" role="tabpanel" hidden>
+
+  <!-- ============== COMPONENTS ============== -->
+  <section>
+    <h2 class="section-title">Components</h2>
+    <p class="section-text">
+      Application components derived from the Home and Contract pages. Each example is rendered
+      inside a dashed frame for inspection — they're the building blocks for future page work.
+      Icons are <strong>Lucide</strong>; brand logos and photos are intentional placeholders
+      (not invented assets).
+    </p>
+
+    <!-- 1. Top bar -->
+    <div class="pattern">
+      <div class="pattern-label">01 · Top bar · two states</div>
+      <p class="section-text" style="margin-bottom: var(--space-4);">
+        Default sits on the light-green tint at the top of the page. Once the page
+        scrolls past <code>~48px</code>, the bar transitions to white with a soft shadow
+        (<code>--shadow-sm</code>), at <code>--duration-base / --ease-standard</code>.
+      </p>
+
+      <span class="state-label">Default · page top</span>
+      <div class="pattern-frame pattern-frame--tight">
+        <header class="app-topbar">
+          <button class="app-topbar__menu" aria-label="Menu"><i data-lucide="menu"></i></button>
+          <img class="seiva-mark" src="Assetts/seiva_logo_byvisma_green.svg" alt="Seiva by Visma" />
+          <div class="app-topbar__search">
+            <div class="search-field">
+              <i data-lucide="search"></i>
+              <input type="search" placeholder="Search" />
+              <i data-lucide="mic"></i>
+            </div>
+          </div>
+          <div class="app-topbar__user">
+            <span class="app-topbar__group">Walkthrough <i data-lucide="bell"></i></span>
+            <span class="app-topbar__divider"></span>
+            <span class="app-topbar__group">Anna Anderson <i data-lucide="user-cog"></i></span>
+            <span class="app-topbar__divider"></span>
+            <button class="icon-button" aria-label="Help"><i data-lucide="help-circle"></i></button>
+          </div>
+        </header>
+      </div>
+
+      <span class="state-label" style="margin-top: var(--space-4);">Scrolled · on scroll &gt; 48px</span>
+      <div class="pattern-frame pattern-frame--tight">
+        <header class="app-topbar app-topbar--scrolled">
+          <button class="app-topbar__menu" aria-label="Menu"><i data-lucide="menu"></i></button>
+          <img class="seiva-mark" src="Assetts/seiva_logo_byvisma_green.svg" alt="Seiva by Visma" />
+          <div class="app-topbar__search">
+            <div class="search-field">
+              <i data-lucide="search"></i>
+              <input type="search" placeholder="Search" />
+              <i data-lucide="mic"></i>
+            </div>
+          </div>
+          <div class="app-topbar__user">
+            <span class="app-topbar__group">Walkthrough <i data-lucide="bell"></i></span>
+            <span class="app-topbar__divider"></span>
+            <span class="app-topbar__group">Anna Anderson <i data-lucide="user-cog"></i></span>
+            <span class="app-topbar__divider"></span>
+            <button class="icon-button" aria-label="Help"><i data-lucide="help-circle"></i></button>
+          </div>
+        </header>
+      </div>
+    </div>
+
+    <!-- 2. Search field -->
+    <div class="pattern">
+      <div class="pattern-label">02 · Search field</div>
+      <div class="pattern-frame">
+        <div style="max-width: 480px;">
+          <div class="search-field">
+            <i data-lucide="search"></i>
+            <input type="search" placeholder="Search" />
+            <i data-lucide="mic"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Category sidebar -->
+    <div class="pattern">
+      <div class="pattern-label">03 · Category sidebar</div>
+      <div class="pattern-frame pattern-frame--subtle">
+        <nav class="category-sidebar" aria-label="Kategori">
+          <div class="category-sidebar__header">
+            <span class="category-sidebar__header-title">Kategori</span>
+          </div>
+          <div class="category-sidebar__list">
+            <a class="category-sidebar__item" href="#"><i data-lucide="smartphone"></i> Telefoni &amp; Tillbehör</a>
+            <a class="category-sidebar__item" href="#"><i data-lucide="fuel"></i> Drivmedel &amp; Tillbehör</a>
+            <a class="category-sidebar__item" href="#"><i data-lucide="plane"></i> Resor</a>
+            <a class="category-sidebar__item category-sidebar__item--active" href="#"><i data-lucide="pin"></i> Kontor</a>
+            <a class="category-sidebar__item" href="#"><i data-lucide="piggy-bank"></i> Ekonomi &amp; Personal</a>
+            <a class="category-sidebar__item" href="#"><i data-lucide="monitor"></i> IT, Datorer &amp; Skrivare</a>
+            <a class="category-sidebar__item" href="#"><i data-lucide="truck"></i> Bud &amp; Frakt</a>
+            <a class="category-sidebar__item" href="#"><i data-lucide="coffee"></i> Dryck &amp; Frukt</a>
+            <a class="category-sidebar__item" href="#"><i data-lucide="glasses"></i> Glasögon &amp; Linser</a>
+            <a class="category-sidebar__item" href="#"><i data-lucide="printer"></i> Tryck &amp; Profil</a>
+            <a class="category-sidebar__item" href="#"><i data-lucide="file-text"></i> Egna avtal</a>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- 4. Sidebar CTA -->
+    <div class="pattern">
+      <div class="pattern-label">04 · Sidebar CTA</div>
+      <div class="pattern-frame">
+        <div style="width: 220px;">
+          <button class="sidebar-cta">Skiva aktiva avtal · 12 / 13</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Hero banner -->
+    <div class="pattern">
+      <div class="pattern-label">05 · Hero banner</div>
+      <div class="pattern-frame pattern-frame--tight">
+        <div class="hero">
+          <div>
+            <h3 class="hero__title">Välkommen till Seiva</h3>
+            <p class="hero__sub">Här hittar du alla våra avtal, erbjudanden och rabatter — samlat på ett ställe.</p>
+            <button class="hero__cta">Walkthrough <i data-lucide="arrow-right"></i></button>
+          </div>
+          <img class="hero__art" src="Assetts/banner-assetts.png" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Brand promo -->
+    <div class="pattern">
+      <div class="pattern-label">06 · Brand promo (contract page)</div>
+      <div class="pattern-frame pattern-frame--tight">
+        <div class="brand-promo">
+          <span class="brand-logo">Best Western</span>
+          <h3 class="brand-promo__title">20% rabatt på hotell</h3>
+          <button class="btn-outline">Lägg till avtal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Tabs -->
+    <div class="pattern">
+      <div class="pattern-label">07 · Tabs</div>
+      <div class="pattern-frame">
+        <div class="tabs">
+          <button class="tabs__item tabs__item--active">Mina avtal</button>
+          <button class="tabs__item">Bra offer</button>
+          <button class="tabs__item">Favoriter avtal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Filter bar -->
+    <div class="pattern">
+      <div class="pattern-label">08 · Filter bar</div>
+      <div class="pattern-frame pattern-frame--subtle">
+        <div class="filter-bar">
+          <button class="pill-button"><i data-lucide="sliders-horizontal"></i> Filter</button>
+          <div class="search-field">
+            <i data-lucide="search"></i>
+            <input type="search" placeholder="Sök avtal" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Small contract card -->
+    <div class="pattern">
+      <div class="pattern-label">09 · Small contract card · 5-column grid</div>
+      <div class="pattern-frame pattern-frame--subtle">
+        <div class="contract-grid">
+          <div class="contract-card">
+            <span class="brand-logo">Best Western</span>
+            <span class="contract-card__rabatt">rabatt 20%</span>
+            <button class="btn-card">Detaljer</button>
+          </div>
+          <div class="contract-card">
+            <span class="brand-logo">Hertz</span>
+            <span class="contract-card__rabatt">rabatt 15%</span>
+            <button class="btn-card">Detaljer</button>
+          </div>
+          <div class="contract-card">
+            <span class="brand-logo">Snabbtryck</span>
+            <span class="contract-card__rabatt">rabatt 10%</span>
+            <button class="btn-card">Detaljer</button>
+          </div>
+          <div class="contract-card">
+            <span class="brand-logo">Best Western</span>
+            <span class="contract-card__rabatt">rabatt 20%</span>
+            <button class="btn-card">Detaljer</button>
+          </div>
+          <div class="contract-card">
+            <span class="brand-logo">DHL</span>
+            <span class="contract-card__rabatt">rabatt 25%</span>
+            <button class="btn-card">Detaljer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. News card -->
+    <div class="pattern">
+      <div class="pattern-label">10 · News card</div>
+      <div class="pattern-frame">
+        <article class="news-card">
+          <div>
+            <div class="news-card__eyebrow">News</div>
+            <h4 class="news-card__title">Affärsmaterner: Kraftigt uppsving i framtidstro hos svenska småföretag</h4>
+          </div>
+          <div class="image-placeholder">Image</div>
+        </article>
+        <article class="news-card">
+          <div>
+            <div class="news-card__eyebrow">News</div>
+            <h4 class="news-card__title">Kundservice stänger tidigare 23 maj</h4>
+          </div>
+          <div class="image-placeholder">Image</div>
+        </article>
+        <article class="news-card" style="border-bottom: none;">
+          <div>
+            <div class="news-card__eyebrow">News</div>
+            <h4 class="news-card__title">Nytt avtal: 20% rabatt hos Get a Newsletter</h4>
+          </div>
+          <div class="image-placeholder">Image</div>
+        </article>
+      </div>
+    </div>
+
+    <!-- 11. Promo card -->
+    <div class="pattern">
+      <div class="pattern-label">11 · Promo card</div>
+      <div class="pattern-frame">
+        <div style="max-width: 320px;">
+          <div class="promo-card">
+            <span class="promo-card__tbd">fill color TBD</span>
+            <div class="image-placeholder" style="aspect-ratio: 16/9; margin-bottom: var(--space-3);">Image</div>
+            <p class="promo-card__eyebrow">ÄNTLIGEN BLACK FRIDAY!</p>
+            <p class="promo-card__body">Black Week är igen och vi har samlat alla erbjudanden — missa inte chansen!</p>
+            <a class="promo-card__link" href="#">Läs mer →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. Large content card -->
+    <div class="pattern">
+      <div class="pattern-label">12 · Large content card</div>
+      <div class="pattern-frame">
+        <div class="content-card">
+          <div class="image-placeholder">Image · landscape</div>
+          <div class="content-card__body">
+            <span class="brand-logo">Hotels</span>
+            <h4 class="content-card__title">Rabatter for dig som anställd</h4>
+            <p class="content-card__text">Spara på hotellnätter, leverans och kontorsmaterial — våra avtal gäller överallt i landet.</p>
+            <button class="btn-card" style="width: auto; padding: var(--space-3) var(--space-5);">Detaljer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. Info banner -->
+    <div class="pattern">
+      <div class="pattern-label">13 · Info banner</div>
+      <div class="pattern-frame">
+        <div class="info-banner">
+          <span class="info-banner__icon"><i data-lucide="info"></i></span>
+          <span>
+            <span class="info-banner__title">iClick here!</span>
+            This will be a marketing text for the ongoing campaign
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14. Breadcrumb -->
+    <div class="pattern">
+      <div class="pattern-label">14 · Breadcrumb</div>
+      <div class="pattern-frame">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="#">Hem</a>
+          <i data-lucide="chevron-right"></i>
+          <a href="#">Resor &amp; Hotell</a>
+          <i data-lucide="chevron-right"></i>
+          <span aria-current="page">Best Western</span>
+        </nav>
+      </div>
+    </div>
+
+    <!-- 15. Bullet info -->
+    <div class="pattern">
+      <div class="pattern-label">15 · Bullet info</div>
+      <div class="pattern-frame">
+        <div class="bullet-info">
+          <div class="bullet-info__row">
+            <span class="bullet-info__icon"><i data-lucide="badge-percent"></i></span>
+            <div>
+              <h5 class="bullet-info__title">Dina VismaFördelar</h5>
+              <p class="bullet-info__body">20% rabatt på Flex Rate-priset: Norden samt Polen, Lettland och Litauen. 15% rabatt på Flex Rate-priset i resten av världen.</p>
+            </div>
+          </div>
+          <div class="bullet-info__row">
+            <span class="bullet-info__icon"><i data-lucide="infinity"></i></span>
+            <div>
+              <h5 class="bullet-info__title">Alltid hos leverantören</h5>
+              <p class="bullet-info__body">Bonusprogram hos andra hotellkedjer? Dina poäng matchas upp. 4 000 hotell över hela världen · 150 i Norden · 117 i Sverige.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 16. Link row -->
+    <div class="pattern">
+      <div class="pattern-label">16 · Link row list</div>
+      <div class="pattern-frame">
+        <div class="link-row-list">
+          <a class="link-row" href="#">
+            <span class="link-row__title">Best western rewards</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+          <a class="link-row" href="#">
+            <span class="link-row__title">Vanliga frågor</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+          <a class="link-row" href="#">
+            <span class="link-row__title">Betalningsvillkor</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+          <a class="link-row" href="#">
+            <span class="link-row__title">Kontakt</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 17. Footer -->
+    <div class="pattern">
+      <div class="pattern-label">17 · Footer</div>
+      <div class="pattern-frame pattern-frame--tight">
+        <footer class="app-footer">
+          <div class="app-footer__left">
+            <span>© 2025 Seiva</span>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+          </div>
+          <div class="app-footer__right">
+            <span><i data-lucide="globe"></i> English (US)</span>
+            <a href="#">Support and Resources</a>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+  </section>
+
+  </div><!-- /components -->
+
+</main>
+<script>
+  // Render Lucide icons after the DOM is parsed.
+  if (window.lucide) lucide.createIcons();
+
+  // Tab switching
+  const tabs = document.querySelectorAll('.tab-bar__item');
+  const panels = document.querySelectorAll('[data-tab-panel]');
+  tabs.forEach(btn => btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    tabs.forEach(t => {
+      const active = t === btn;
+      t.classList.toggle('is-active', active);
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    panels.forEach(p => { p.hidden = p.dataset.tabPanel !== target; });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }));
+</script>
+</body>
+</html>
