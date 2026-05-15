@@ -26,7 +26,7 @@
 
   /* ============ LAYOUT — 1400px wrapper ============ */
   .wrap { max-width: 1400px; margin: 0 auto; padding: 0 var(--space-6); }
-  .topbar-bleed { background: var(--color-primary-05); }
+  .topbar-bleed { background: var(--color-neutral-10); }
 
   /* ============ TOP BAR ============ */
   .topbar {
@@ -330,22 +330,30 @@
   }
   .section-head__nav { display: flex; gap: var(--space-2); }
 
-  /* Products rotator — borderless cards, dark "S" mark, no CTA per Figma */
+  /* Products rotator — horizontal scroller, 4 cards visible, scroll-snap by page */
   .products {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
     gap: var(--space-5);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding-bottom: var(--space-2);
   }
+  .products::-webkit-scrollbar { display: none; }
   .product {
+    flex: 0 0 calc((100% - var(--space-5) * 3) / 4);
+    scroll-snap-align: start;
     display: flex; flex-direction: column; gap: var(--space-3);
   }
   .product__img {
     aspect-ratio: 1 / 1;
     background: var(--color-bg-subtle);
     border-radius: var(--radius-sm);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--color-text-subtle);
-    font-family: var(--font-mono); font-size: 0.7rem;
+    width: 100%;
+    object-fit: cover;
+    display: block;
   }
   .product__title {
     font-size: var(--body-md-size);
@@ -512,15 +520,15 @@
         <header class="section-head">
           <h2 class="section-title">Populära produkter</h2>
           <div class="section-head__nav">
-            <button class="icon-btn icon-btn--sm" aria-label="Föregående"><i data-lucide="chevron-left"></i></button>
-            <button class="icon-btn icon-btn--sm" aria-label="Nästa"><i data-lucide="chevron-right"></i></button>
+            <button class="icon-btn icon-btn--sm" data-rotator="prev" aria-label="Föregående"><i data-lucide="chevron-left"></i></button>
+            <button class="icon-btn icon-btn--sm" data-rotator="next" aria-label="Nästa"><i data-lucide="chevron-right"></i></button>
           </div>
         </header>
 
-        <div class="products">
+        <div class="products" data-rotator-track>
 
           <article class="product">
-            <div class="product__img">Produktbild</div>
+            <img class="product__img" src="https://picsum.photos/seed/seiva-1/400/400" alt="" />
             <h3 class="product__title">Stiftemaskin OPTIMA Grip 20ark elektrisk</h3>
             <p class="product__list-price">Listpris NOK 1 190,00</p>
             <p class="product__seiva-row">
@@ -529,7 +537,7 @@
           </article>
 
           <article class="product">
-            <div class="product__img">Produktbild</div>
+            <img class="product__img" src="https://picsum.photos/seed/seiva-2/400/400" alt="" />
             <h3 class="product__title">Te LIPTON assortert kartong (300)</h3>
             <p class="product__list-price">Listpris NOK 589,00</p>
             <p class="product__seiva-row">
@@ -538,7 +546,7 @@
           </article>
 
           <article class="product">
-            <div class="product__img">Produktbild</div>
+            <img class="product__img" src="https://picsum.photos/seed/seiva-3/400/400" alt="" />
             <h3 class="product__title">Kopipapir HP Premium A4 80g (500)</h3>
             <p class="product__list-price">Listpris NOK 745,00</p>
             <p class="product__seiva-row">
@@ -547,7 +555,43 @@
           </article>
 
           <article class="product">
-            <div class="product__img">Produktbild</div>
+            <img class="product__img" src="https://picsum.photos/seed/seiva-4/400/400" alt="" />
+            <h3 class="product__title">Kopipapir MULTICOPY A4 80g (500)</h3>
+            <p class="product__list-price">Listpris NOK 459,50</p>
+            <p class="product__seiva-row">
+              SEIVA | 298,40 / -35 % <span class="product__seiva-mark">S</span>
+            </p>
+          </article>
+
+          <article class="product">
+            <img class="product__img" src="https://picsum.photos/seed/seiva-5/400/400" alt="" />
+            <h3 class="product__title">Stiftemaskin OPTIMA Grip 20ark elektrisk</h3>
+            <p class="product__list-price">Listpris NOK 1 190,00</p>
+            <p class="product__seiva-row">
+              SEIVA | 773,5 / -35 % <span class="product__seiva-mark">S</span>
+            </p>
+          </article>
+
+          <article class="product">
+            <img class="product__img" src="https://picsum.photos/seed/seiva-6/400/400" alt="" />
+            <h3 class="product__title">Te LIPTON assortert kartong (300)</h3>
+            <p class="product__list-price">Listpris NOK 589,00</p>
+            <p class="product__seiva-row">
+              SEIVA | 382,86 / -35 % <span class="product__seiva-mark">S</span>
+            </p>
+          </article>
+
+          <article class="product">
+            <img class="product__img" src="https://picsum.photos/seed/seiva-7/400/400" alt="" />
+            <h3 class="product__title">Kopipapir HP Premium A4 80g (500)</h3>
+            <p class="product__list-price">Listpris NOK 745,00</p>
+            <p class="product__seiva-row">
+              SEIVA | 558,75 / -25 % <span class="product__seiva-mark">S</span>
+            </p>
+          </article>
+
+          <article class="product">
+            <img class="product__img" src="https://picsum.photos/seed/seiva-8/400/400" alt="" />
             <h3 class="product__title">Kopipapir MULTICOPY A4 80g (500)</h3>
             <p class="product__list-price">Listpris NOK 459,50</p>
             <p class="product__seiva-row">
@@ -565,6 +609,17 @@
 
 <script>
   if (window.lucide) lucide.createIcons();
+
+  // Popular products rotator — chevrons scroll the strip by one viewport-width (4 cards)
+  (function () {
+    var track = document.querySelector('[data-rotator-track]');
+    var prev  = document.querySelector('[data-rotator="prev"]');
+    var next  = document.querySelector('[data-rotator="next"]');
+    if (!track || !prev || !next) return;
+    var page = function () { return track.clientWidth; };
+    prev.addEventListener('click', function () { track.scrollBy({ left: -page(), behavior: 'smooth' }); });
+    next.addEventListener('click', function () { track.scrollBy({ left:  page(), behavior: 'smooth' }); });
+  })();
 </script>
 </body>
 </html>
